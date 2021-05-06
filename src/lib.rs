@@ -1,11 +1,11 @@
-extern crate bit_vec;
+extern crate bitvec;
 
 mod genetic;
 mod algorithm;
 
 pub use genetic::Genetic;
 
-pub use algorithm::algorithm_params;
+pub use algorithm::AlgorithmParams;
 pub use algorithm::genetic_algorithm;
 
 #[cfg(test)]
