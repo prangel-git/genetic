@@ -1,12 +1,12 @@
 extern crate bitvec;
 
-mod genetic;
 mod algorithm;
+mod genetic;
 
 pub use genetic::Genetic;
 
-pub use algorithm::AlgorithmParams;
 pub use algorithm::genetic_algorithm;
+pub use algorithm::AlgorithmParams;
 
 #[cfg(test)]
 mod tests {
