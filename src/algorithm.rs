@@ -38,7 +38,6 @@ where
     let mut rng_b = thread_rng();
 
     for _ in 0..params.rounds {
-
         let dist_a = surival_probability_make(&population, fitness, cache);
         let dist_b = surival_probability_make(&population, fitness, cache);
 
@@ -47,10 +46,11 @@ where
             .zip(dist_b.sample_iter(&mut rng_b))
             .take(params.max_population)
             .map(|(i, j)| {
-                Rc::new(
-                    population[i]
-                        .cross_over(&population[j], params.co_rate)
-                        .mutation(params.mutation_rate),
+                reproduction(
+                    &population[i],
+                    &population[j],
+                    params.mutation_rate,
+                    params.co_rate,
                 )
             })
             .collect::<Vec<_>>();
@@ -58,7 +58,6 @@ where
 
     return population;
 }
-
 
 /// If the initial population is empty, it spontanously generates an individual.
 fn initial_population_make<T>(initial_population: &Vec<Rc<T>>) -> Vec<Rc<T>>
@@ -85,12 +84,12 @@ where
 
 /// Finds the distribution for survival of a population based on a fitness function.
 fn surival_probability_make<T>(
-    population: &Vec<Rc<T>>, 
-    fitness: &Box<dyn Fn(&T) -> f64>, 
-    cache: &mut HashMap<Rc<T>, f64>
-) -> WeightedIndex<f64> 
-where 
-T: Genetic + Hash + Eq,
+    population: &Vec<Rc<T>>,
+    fitness: &Box<dyn Fn(&T) -> f64>,
+    cache: &mut HashMap<Rc<T>, f64>,
+) -> WeightedIndex<f64>
+where
+    T: Genetic + Hash + Eq,
 {
     WeightedIndex::new(
         population
@@ -98,4 +97,15 @@ T: Genetic + Hash + Eq,
             .map(|sample| calc_fitness(sample, fitness, cache)),
     )
     .unwrap()
+}
+
+fn reproduction<T>(parent_a: &Rc<T>, parent_b: &Rc<T>, mutation_rate: f64, co_rate: f64) -> Rc<T>
+where
+    T: Genetic,
+{
+    Rc::new(
+        parent_a
+            .cross_over(parent_b, co_rate)
+            .mutation(mutation_rate),
+    )
 }
