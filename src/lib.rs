@@ -3,8 +3,8 @@ extern crate bitvec;
 mod algorithm;
 mod genetic;
 
-pub use genetic::Genetic;
 pub use genetic::Chromosome;
+pub use genetic::Genetic;
 
 pub use algorithm::genetic_algorithm;
 pub use algorithm::AlgorithmParams;

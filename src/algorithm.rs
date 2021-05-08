@@ -8,8 +8,7 @@ use rand::prelude::*;
 use super::Genetic;
 
 /// Contains parameters for genetic algorithm
-pub struct AlgorithmParams
-{
+pub struct AlgorithmParams {
     pub rounds: usize,
     pub max_population: usize,
     pub mutation_rate: f64,
