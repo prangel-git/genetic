@@ -48,7 +48,7 @@ fn main() {
         fitness(&DoubleGen { value: 1f64 })
     );
 
-    let f_test = DoubleGen { value: 2f64 };
+    let f_test = DoubleGen { value: 1f64 };
 
     println!("Value f_test: {:?} ", f_test.value);
     println!("Chromosome f_test: {:?} ", f_test.choromosome());
