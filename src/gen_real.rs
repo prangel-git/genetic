@@ -28,12 +28,12 @@ impl Genetic for GenReal {
     fn from_chromosome(chromosome: Chromosome) -> Self {
         if chromosome.is_empty() {
             let mut rng = rand::thread_rng();
-            let value = 4f64 * rng.gen::<f64>() - 2f64; 
-            
+            let value = 4f64 * rng.gen::<f64>() - 2f64;
+
             GenReal::new(value)
         } else {
             let mut chr = chromosome;
-            chr.set(62, false);  // Forces the exponent of f64 to be negative. Produces a number in (-2, 2)
+            chr.set(62, false); // Forces the exponent of f64 to be negative. Produces a number in (-2, 2)
 
             let value_u64 = chr.into_vec()[0];
             let value = f64::from_bits(value_u64);

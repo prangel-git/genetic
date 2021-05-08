@@ -34,12 +34,7 @@ fn main() {
     let mut cache = Cache::new();
     let fitness_b: Box<dyn Fn(&GenReal) -> f64> = Box::new(fitness);
 
-    let last_population = genetic_algorithm(
-        &Vec::new(), 
-        &params, 
-        &fitness_b,
-        &mut cache,
-    );
+    let last_population = genetic_algorithm(&Vec::new(), &params, &fitness_b, &mut cache);
 
     let mut results = last_population
         .iter()
@@ -49,6 +44,11 @@ fn main() {
     results.sort_by(|(_, a), (_, b)| b.partial_cmp(a).unwrap());
 
     for (val, fit) in results {
-        println!("Value {:.8}, Fitness Calculated {:.8}, Fitness stored {:.8}", val, fitness(&GenReal::new(*val)), fit);
+        println!(
+            "Value {:.8}, Fitness Calculated {:.8}, Fitness stored {:.8}",
+            val,
+            fitness(&GenReal::new(*val)),
+            fit
+        );
     }
 }
