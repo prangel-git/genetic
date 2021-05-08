@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use super::*;
 
 /// Implements a real number with the genetic trait.
@@ -17,23 +19,23 @@ impl GenReal {
 
 impl Genetic for GenReal {
     fn choromosome(&self) -> Chromosome {
-        let value_bytes = self.value.to_be_bytes();
-        let value_usize = usize::from_be_bytes(value_bytes);
-        Chromosome::from_element(value_usize)
+        let value_bits = self.value.to_bits();
+        Chromosome::from_element(value_bits)
     }
 
     fn from_chromosome(chromosome: Chromosome) -> Self {
         if chromosome.is_empty() {
-            GenReal { value: 0f64 }
+            let mut rng = rand::thread_rng();
+            let value = 4f64 * rng.gen::<f64>() - 2f64; 
+            
+            GenReal::new(value)
         } else {
             let mut chr = chromosome;
-            chr.set(62, false); // Forces sign of f64 to be positive
-            chr.set(63, false); // Forces exponent of f64 to be negative
+            chr.set(62, false);  // Forces the exponent of f64 to be negative. Produces a number in (-2, 2)
 
-            let value_usize = chr.into_vec()[0];
-            let value_bytes = value_usize.to_be_bytes();
-            let value = f64::from_be_bytes(value_bytes);
-            GenReal { value }
+            let value_u64 = chr.into_vec()[0];
+            let value = f64::from_bits(value_u64);
+            GenReal::new(value)
         }
     }
 }
