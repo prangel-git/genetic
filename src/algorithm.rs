@@ -19,7 +19,7 @@ pub struct AlgorithmParams {
 pub fn genetic_algorithm<T>(
     initial_population: &Vec<Rc<T>>,
     params: &AlgorithmParams,
-    fitness: Box<dyn Fn(&T) -> usize>,
+    fitness: Box<dyn Fn(&T) -> f64>,
 ) -> Vec<Rc<T>>
 where
     T: Genetic,

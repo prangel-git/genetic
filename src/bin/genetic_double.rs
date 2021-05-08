@@ -1,7 +1,9 @@
 use genetic::*;
 
-fn fitness(x: &GenReal) -> usize {
-    (10000f64 * x.value() * (2f64 - x.value()) + 1f64).max(1f64) as usize
+fn fitness(x_gen: &GenReal) -> f64 {
+    let x = *x_gen.value();
+
+    (x + 2f64) * (2f64 - x) * x * x + f64::EPSILON
 }
 
 fn main() {
@@ -36,7 +38,7 @@ fn main() {
         .map(|x| (x.value(), fitness(x)))
         .collect::<Vec<_>>();
 
-    results.sort_by(|(_, a), (_, b)| b.cmp(a));
+    results.sort_by(|(_, a), (_, b)| b.partial_cmp(a).unwrap());
 
     for (val, fit) in results {
         println!("Value {:?}, Fitness {:?}", val, fit);

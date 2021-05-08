@@ -1,7 +1,7 @@
 use bitvec::prelude::*;
 use rand::Rng;
 
-pub type Chromosome = BitVec;
+pub type Chromosome = BitVec<Lsb0, u64>;
 
 /// Produces genetic material for genetic algorithm
 pub trait Genetic {
