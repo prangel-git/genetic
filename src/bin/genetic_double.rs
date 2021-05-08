@@ -25,10 +25,10 @@ fn main() {
     );
 
     let params = AlgorithmParams {
-        rounds: 100,
+        rounds: 50,
         max_population: 10,
-        mutation_rate: 0.05,
-        co_rate: 0.01,
+        mutation_rate: 0.1,
+        co_rate: 0.5,
     };
 
     let mut cache = Cache::new();
@@ -43,6 +43,8 @@ fn main() {
 
     results.sort_by(|(_, a), (_, b)| b.partial_cmp(a).unwrap());
 
+    println!("Last population:");
+
     for (val, fit) in results {
         println!(
             "Value {:.8}, Fitness Calculated {:.8}, Fitness stored {:.8}",
@@ -51,4 +53,20 @@ fn main() {
             fit
         );
     }
+
+    println!("Full populaiton:");
+
+    let mut cache_vec = cache.into_iter().collect::<Vec<(_,_)>>();
+    cache_vec.sort_by(|(_, a),(_, b)| b.partial_cmp(a).unwrap());
+
+    for (val, fit) in cache_vec.iter().take(10) {
+        println!(
+            "Value {:.8}, Fitness Calculated {:.8}, Fitness stored {:.8}",
+            val.value(),
+            fitness(&val),
+            fit
+        );
+    }
+
+
 }
