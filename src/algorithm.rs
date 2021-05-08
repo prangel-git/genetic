@@ -38,19 +38,9 @@ where
     let mut rng_b = thread_rng();
 
     for _ in 0..params.rounds {
-        let dist_a = WeightedIndex::new(
-            population
-                .iter()
-                .map(|sample| calc_fitness(sample, fitness, cache)),
-        )
-        .unwrap();
 
-        let dist_b = WeightedIndex::new(
-            population
-                .iter()
-                .map(|sample| calc_fitness(sample, fitness, cache)),
-        )
-        .unwrap();
+        let dist_a = surival_probability_make(&population, fitness, cache);
+        let dist_b = surival_probability_make(&population, fitness, cache);
 
         population = dist_a
             .sample_iter(&mut rng_a)
@@ -64,12 +54,11 @@ where
                 )
             })
             .collect::<Vec<_>>();
-
-        // population = population_n;
     }
 
     return population;
 }
+
 
 /// If the initial population is empty, it spontanously generates an individual.
 fn initial_population_make<T>(initial_population: &Vec<Rc<T>>) -> Vec<Rc<T>>
@@ -92,4 +81,21 @@ where
         Entry::Vacant(entry) => *entry.insert(fitness(element)),
         Entry::Occupied(entry) => *entry.get(),
     }
+}
+
+/// Finds the distribution for survival of a population based on a fitness function.
+fn surival_probability_make<T>(
+    population: &Vec<Rc<T>>, 
+    fitness: &Box<dyn Fn(&T) -> f64>, 
+    cache: &mut HashMap<Rc<T>, f64>
+) -> WeightedIndex<f64> 
+where 
+T: Genetic + Hash + Eq,
+{
+    WeightedIndex::new(
+        population
+            .iter()
+            .map(|sample| calc_fitness(sample, fitness, cache)),
+    )
+    .unwrap()
 }
