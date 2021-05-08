@@ -56,8 +56,8 @@ fn main() {
 
     println!("Full populaiton:");
 
-    let mut cache_vec = cache.into_iter().collect::<Vec<(_,_)>>();
-    cache_vec.sort_by(|(_, a),(_, b)| b.partial_cmp(a).unwrap());
+    let mut cache_vec = cache.into_iter().collect::<Vec<(_, _)>>();
+    cache_vec.sort_by(|(_, a), (_, b)| b.partial_cmp(a).unwrap());
 
     for (val, fit) in cache_vec.iter().take(10) {
         println!(
@@ -67,6 +67,4 @@ fn main() {
             fit
         );
     }
-
-
 }

@@ -99,7 +99,7 @@ where
     .unwrap()
 }
 
-/// Produces offspring from two parents. 
+/// Produces offspring from two parents.
 fn reproduction<T>(parent_a: &Rc<T>, parent_b: &Rc<T>, mutation_rate: f64, co_rate: f64) -> Rc<T>
 where
     T: Genetic,
