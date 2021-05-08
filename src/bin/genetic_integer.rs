@@ -1,43 +1,56 @@
 use genetic::*;
 
-struct USize {
-    value: usize,
+struct Float {
+    value: f64,
 }
 
-impl Genetic for USize {
+impl Genetic for Float {
     fn choromosome(&self) -> Chromosome {
-        Chromosome::from_element(self.value)
+        let value_bytes = self.value.to_be_bytes();
+        let value_usize = usize::from_be_bytes(value_bytes);
+        Chromosome::from_element(value_usize)
     }
 
     fn from_chromosome(chromosome: Chromosome) -> Self {
         if chromosome.is_empty() {
-            USize{ value:0 }
+            Float{ value: 0f64 }
         } else {
-            let value  = chromosome.into_vec()[0];
-            USize{ value }
+            let mut chr = chromosome;
+            chr.set(62, false);     // Forces sign of f64 to be positive
+            chr.set(63, false);     // Forces exponent of f64 to be negative 
+            
+            let value_usize  = chr.into_vec()[0];
+            let value_bytes = value_usize.to_be_bytes();
+            let value = f64::from_be_bytes(value_bytes);
+            Float{ value }
         }
     }
 }
 
-fn fitness(x: &USize) -> usize {
-    ((x.value >> 34 ) * ((usize::MAX - x.value) >> 34)).max(1)
+fn fitness(x: &Float) -> usize {
+    (10000f64 * x.value * (2f64 - x.value) + 1f64).max(1f64) as usize
 }
 
 
 fn main() {
-    println!("min u {:}, fitness {:}", usize::MIN, fitness(&USize{ value:usize::MIN }));
-    println!("max u {:}, fitness {:}", usize::MAX, fitness(&USize{ value:usize::MAX }));
-    println!("half u {:}, fitness {:}", usize::MAX / 2, fitness(&USize{ value: usize::MAX / 2 }));
+    println!("min u {:}, fitness {:}", 0f64, fitness(&Float{ value: 0f64 }));
+    println!("max u {:}, fitness {:}", 2f64, fitness(&Float{ value: 2f64 }));
+    println!("half u {:}, fitness {:}", 1f64, fitness(&Float{ value: 1f64 }));
+
+    let f_test = Float{ value: 2f64};
+
+    println!("Value f_test: {:?} ", f_test.value);
+    println!("Chromosome f_test: {:?} ", f_test.choromosome());
+    println!("Recovered f_test: {:?} ", Float::from_chromosome(f_test.choromosome()).value);
 
     let params = AlgorithmParams {
         rounds: 100,
-        max_population: 20,
-        mutation_rate: 0.1,
+        max_population: 10,
+        mutation_rate: 0.05,
         co_rate: 0.01,
-        fitness: Box::new(fitness),
     };
 
-    let last_population = genetic_algorithm(&Vec::new(), &params);
+    let last_population = genetic_algorithm(&Vec::new(), &params, Box::new(fitness));
 
     let mut results = last_population.iter().map(|x| (x.value, fitness(x))).collect::<Vec<_>>();
 
