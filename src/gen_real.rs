@@ -1,5 +1,7 @@
 use rand::Rng;
 
+use std::hash::Hash;
+
 use super::*;
 
 /// Implements a real number with the genetic trait.
@@ -39,3 +41,17 @@ impl Genetic for GenReal {
         }
     }
 }
+
+impl Hash for GenReal {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.choromosome().hash(state);
+    }
+}
+
+impl PartialEq for GenReal {
+    fn eq(&self, other: &Self) -> bool {
+        self.choromosome() == other.choromosome()
+    }
+}
+
+impl Eq for GenReal {}

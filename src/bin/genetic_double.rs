@@ -11,8 +11,8 @@ fn main() {
     println!("max u {:}, fitness {:}", 2f64, fitness(&GenReal::new(2f64)));
     println!(
         "half u {:}, fitness {:}",
-        1f64,
-        fitness(&GenReal::new(1f64))
+        2f64.sqrt(),
+        fitness(&GenReal::new(2f64.sqrt()))
     );
 
     let f_test = GenReal::new(1f64);
@@ -31,7 +31,15 @@ fn main() {
         co_rate: 0.01,
     };
 
-    let last_population = genetic_algorithm(&Vec::new(), &params, Box::new(fitness));
+    let mut cache = Cache::new();
+    let fitness_b: Box<dyn Fn(&GenReal) -> f64> = Box::new(fitness);
+
+    let last_population = genetic_algorithm(
+        &Vec::new(), 
+        &params, 
+        &fitness_b,
+        &mut cache,
+    );
 
     let mut results = last_population
         .iter()
@@ -41,6 +49,6 @@ fn main() {
     results.sort_by(|(_, a), (_, b)| b.partial_cmp(a).unwrap());
 
     for (val, fit) in results {
-        println!("Value {:?}, Fitness {:?}", val, fit);
+        println!("Value {:.8}, Fitness Calculated {:.8}, Fitness stored {:.8}", val, fitness(&GenReal::new(*val)), fit);
     }
 }
