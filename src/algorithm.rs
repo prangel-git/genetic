@@ -12,16 +12,16 @@ pub struct AlgorithmParams<T>
 where
     T: Genetic,
 {
-    rounds: usize,
-    max_popuation: usize,
-    mutation_rate: f64,
-    co_rate: f64,
-    fitness: Box<dyn Fn(&T) -> u64>,
+    pub rounds: usize,
+    pub max_population: usize,
+    pub mutation_rate: f64,
+    pub co_rate: f64,
+    pub fitness: Box<dyn Fn(&T) -> usize>,
 }
 
 /// Runs a genetic algorithm starting from an initial population. It returns the fittest population.
 pub fn genetic_algorithm<T>(
-    initial_population: Vec<Rc<T>>,
+    initial_population: &Vec<Rc<T>>,
     params: &AlgorithmParams<T>,
 ) -> Vec<Rc<T>>
 where
@@ -30,7 +30,7 @@ where
     let mut population = if initial_population.is_empty() {
         vec![Rc::new(T::from_chromosome(BitVec::new()))]
     } else {
-        initial_population
+        initial_population.clone()
     };
 
     let fitness = &params.fitness;
@@ -47,7 +47,7 @@ where
 
         let mut population_next = Vec::new();
 
-        while population_next.len() < params.max_popuation {
+        while population_next.len() < params.max_population {
             let parent_a = &population[dist.sample(&mut rng)];
             let parent_b = &population[dist.sample(&mut rng)];
 

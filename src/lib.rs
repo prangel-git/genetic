@@ -4,6 +4,7 @@ mod algorithm;
 mod genetic;
 
 pub use genetic::Genetic;
+pub use genetic::Chromosome;
 
 pub use algorithm::genetic_algorithm;
 pub use algorithm::AlgorithmParams;
