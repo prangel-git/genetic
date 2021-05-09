@@ -8,7 +8,7 @@ use std::rc::Rc;
 
 use rand::distributions::WeightedIndex;
 
-/// If the initial population is empty, it spontanously generates an individual.
+/// If the initial population is smaller than the max_population, it completes it with random elements
 pub(super) fn initial_population_make<T>(
     initial_population: &Vec<Rc<T>>,
     max_population: usize,
