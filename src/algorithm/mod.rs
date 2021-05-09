@@ -10,8 +10,6 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::rc::Rc;
 
-use rand::prelude::*;
-
 pub type Cache<T> = HashMap<Rc<T>, f64>;
 
 /// Contains parameters for genetic algorithm
@@ -34,26 +32,9 @@ where
 {
     let mut population = initial_population_make(initial_population, params.max_population);
 
-    let mut rng_a = thread_rng();
-    let mut rng_b = thread_rng();
-
     for _ in 0..params.rounds {
-        let dist_a = surival_probability_make(&population, fitness, cache);
-        let dist_b = dist_a.clone();
-
-        population = dist_a
-            .sample_iter(&mut rng_a)
-            .zip(dist_b.sample_iter(&mut rng_b))
-            .take(params.max_population)
-            .map(|(i, j)| {
-                reproduction(
-                    &population[i],
-                    &population[j],
-                    params.mutation_rate,
-                    params.co_rate,
-                )
-            })
-            .collect::<Vec<_>>();
+        let dist = survival_probability_make(&population, fitness, cache);
+        population = update_population(&population, &dist, params.mutation_rate, params.co_rate);
     }
 
     return population;
