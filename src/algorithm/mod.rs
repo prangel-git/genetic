@@ -32,7 +32,7 @@ pub fn genetic_algorithm<T>(
 where
     T: Genetic + Hash + Eq,
 {
-    let mut population = initial_population_make(initial_population);
+    let mut population = initial_population_make(initial_population, params.max_population);
 
     let mut rng_a = thread_rng();
     let mut rng_b = thread_rng();

@@ -8,18 +8,21 @@ use std::rc::Rc;
 
 use rand::distributions::WeightedIndex;
 
-use bitvec::prelude::*;
-
 /// If the initial population is empty, it spontanously generates an individual.
-pub(super) fn initial_population_make<T>(initial_population: &Vec<Rc<T>>) -> Vec<Rc<T>>
+pub(super) fn initial_population_make<T>(
+    initial_population: &Vec<Rc<T>>,
+    max_population: usize,
+) -> Vec<Rc<T>>
 where
     T: Genetic,
 {
-    if initial_population.is_empty() {
-        vec![Rc::new(T::from_chromosome(BitVec::new()))]
-    } else {
-        initial_population.clone()
+    let mut population = initial_population.clone();
+
+    while population.len() < max_population {
+        population.push(Rc::new(T::new_random()))
     }
+
+    return population;
 }
 
 /// Finds the distribution for survival of a population based on a fitness function.

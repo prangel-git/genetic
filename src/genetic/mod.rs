@@ -5,6 +5,9 @@ pub type Chromosome = BitVec<Lsb0, u64>;
 
 /// Produces genetic material for genetic algorithm
 pub trait Genetic {
+    /// Returns a random element
+    fn new_random() -> Self;
+
     /// Returns the gene of an object
     fn choromosome(&self) -> Chromosome;
 
