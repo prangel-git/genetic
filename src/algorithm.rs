@@ -39,7 +39,7 @@ where
 
     for _ in 0..params.rounds {
         let dist_a = surival_probability_make(&population, fitness, cache);
-        let dist_b = surival_probability_make(&population, fitness, cache);
+        let dist_b = dist_a.clone();
 
         population = dist_a
             .sample_iter(&mut rng_a)
