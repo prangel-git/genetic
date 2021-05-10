@@ -67,27 +67,27 @@ where
 pub(super) fn roulette_wheel_selection<T>(
     population: &Vec<Rc<T>>,
     dist: &WeightedIndex<f64>,
+    offspring_len: usize,
     mutation_rate: f64,
     co_rate: f64,
 ) -> Vec<Rc<T>>
 where
     T: Genetic,
 {
-    let pop_len = population.len();
-    let mut next_population = Vec::with_capacity(pop_len);
+    let mut offspring = Vec::with_capacity(offspring_len);
 
     let mut rng = thread_rng();
 
-    for _ in 0..pop_len {
+    for _ in 0..offspring_len {
         let parent_a = &population[dist.sample(&mut rng)];
         let parent_b = &population[dist.sample(&mut rng)];
 
         let child = reproduction(parent_a, parent_b, mutation_rate, co_rate);
 
-        next_population.push(child);
+        offspring.push(child);
     }
 
-    return next_population;
+    return offspring;
 }
 
 /// Produces offspring from two parents.

@@ -36,8 +36,13 @@ where
     for _ in 0..params.rounds {
         let dist = fitness_proportion_distribution(&population, fitness, cache);
 
-        population =
-            roulette_wheel_selection(&population, &dist, params.mutation_rate, params.co_rate);
+        population = roulette_wheel_selection(
+            &population,
+            &dist,
+            population.len(),
+            params.mutation_rate,
+            params.co_rate,
+        );
     }
 
     return population;
@@ -54,13 +59,20 @@ where
 {
     let mut population = initial_population_make(initial_population, params.max_population);
 
+    let offspring_len = params.max_population / 2;
+
     for _ in 0..params.rounds {
         let wins = tournament_wins(&population, matching);
 
         let dist = WeightedIndex::new(wins).unwrap();
 
-        population =
-            roulette_wheel_selection(&population, &dist, params.mutation_rate, params.co_rate);
+        population = roulette_wheel_selection(
+            &population,
+            &dist,
+            offspring_len,
+            params.mutation_rate,
+            params.co_rate,
+        );
     }
 
     return population;
