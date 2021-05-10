@@ -57,22 +57,36 @@ pub fn ga_tournament_selection<T>(
 where
     T: Genetic + Hash + Eq,
 {
-    let mut population = initial_population_make(initial_population, params.max_population);
+    let population_len = params.max_population;
+    let mut population = initial_population_make(initial_population, population_len);
 
-    let offspring_len = params.max_population / 2;
+    let offspring_len = population_len - 1;
+    let mut offspring;
 
     for _ in 0..params.rounds {
         let wins = tournament_wins(&population, matching);
 
-        let dist = WeightedIndex::new(wins).unwrap();
+        let dist = WeightedIndex::new(&wins).unwrap();
 
-        population = roulette_wheel_selection(
+        offspring = roulette_wheel_selection(
             &population,
             &dist,
             offspring_len,
             params.mutation_rate,
             params.co_rate,
         );
+
+        let mut idxs = (0..population_len).collect::<Vec<usize>>();
+
+        idxs.sort_by(|x, y| wins[*y].partial_cmp(&wins[*x]).unwrap());
+
+        population = idxs
+            .iter()
+            .map(|&x| population[x].clone())
+            .take(population_len - offspring_len)
+            .collect::<Vec<_>>();
+
+        population.append(&mut offspring);
     }
 
     return population;
