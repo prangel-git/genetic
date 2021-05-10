@@ -6,6 +6,10 @@ fn fitness(x_gen: &GenReal) -> f64 {
     (x + 2f64) * (2f64 - x) * x * x + f64::EPSILON
 }
 
+fn matching(x: &GenReal, y: &GenReal) -> bool {
+    fitness(x) > fitness(y)
+}
+
 fn main() {
     println!("min u {:}, fitness {:}", 0f64, fitness(&GenReal::new(0f64)));
     println!("max u {:}, fitness {:}", 2f64, fitness(&GenReal::new(2f64)));
@@ -31,10 +35,10 @@ fn main() {
         co_rate: 0.5,
     };
 
-    let mut cache = Cache::new();
+    let mut cache = GenotypeToFitness::new();
     let fitness_b: Box<dyn Fn(&GenReal) -> f64> = Box::new(fitness);
 
-    let last_population = genetic_algorithm(&Vec::new(), &params, &fitness_b, &mut cache);
+    let last_population = ga_fitness_selection(&Vec::new(), &params, &fitness_b, &mut cache);
 
     let mut results = last_population
         .iter()
@@ -65,6 +69,20 @@ fn main() {
             val.value(),
             fitness(&val),
             fit
+        );
+    }
+
+    let matching_b: Box<dyn Fn(&GenReal, &GenReal) -> bool> = Box::new(matching);
+
+    let last_population = ga_tournament_selection(&Vec::new(), &params, &matching_b);
+
+    println!("Last Tournament population:");
+
+    for val in last_population {
+        println!(
+            "Value {:.8}, Fitness Calculated {:.8}",
+            val.value(),
+            fitness(&val)
         );
     }
 }

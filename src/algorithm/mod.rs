@@ -10,7 +10,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::rc::Rc;
 
-pub type Cache<T> = HashMap<Rc<T>, f64>;
+pub type GenotypeToFitness<T> = HashMap<Rc<T>, f64>;
 
 /// Contains parameters for genetic algorithm
 pub struct AlgorithmParams {
@@ -20,12 +20,12 @@ pub struct AlgorithmParams {
     pub co_rate: f64,
 }
 
-/// Runs a genetic algorithm starting from an initial population. It returns the fittest population.
-pub fn genetic_algorithm<T>(
+/// Runs a genetic algorithm using fitness proportion selection.
+pub fn ga_fitness_selection<T>(
     initial_population: &Vec<Rc<T>>,
     params: &AlgorithmParams,
     fitness: &Box<dyn Fn(&T) -> f64>,
-    cache: &mut Cache<T>,
+    cache: &mut GenotypeToFitness<T>,
 ) -> Vec<Rc<T>>
 where
     T: Genetic + Hash + Eq,
@@ -33,8 +33,29 @@ where
     let mut population = initial_population_make(initial_population, params.max_population);
 
     for _ in 0..params.rounds {
-        let dist = survival_probability_make(&population, fitness, cache);
-        population = update_population(&population, &dist, params.mutation_rate, params.co_rate);
+        let dist = fitness_proportion_distribution(&population, fitness, cache);
+        population =
+            roulette_wheel_selection(&population, &dist, params.mutation_rate, params.co_rate);
+    }
+
+    return population;
+}
+
+/// Runs a genetic algorith using tournament selection.
+pub fn ga_tournament_selection<T>(
+    initial_population: &Vec<Rc<T>>,
+    params: &AlgorithmParams,
+    matching: &Box<dyn Fn(&T, &T) -> bool>,
+) -> Vec<Rc<T>>
+where
+    T: Genetic + Hash + Eq,
+{
+    let mut population = initial_population_make(initial_population, params.max_population);
+
+    for _ in 0..params.rounds {
+        let dist = tournament_wins_distribution(&population, matching);
+        population =
+            roulette_wheel_selection(&population, &dist, params.mutation_rate, params.co_rate);
     }
 
     return population;

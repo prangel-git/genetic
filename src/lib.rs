@@ -7,9 +7,10 @@ mod genetic;
 pub use genetic::Chromosome;
 pub use genetic::Genetic;
 
-pub use algorithm::genetic_algorithm;
+pub use algorithm::ga_fitness_selection;
+pub use algorithm::ga_tournament_selection;
 pub use algorithm::AlgorithmParams;
-pub use algorithm::Cache;
+pub use algorithm::GenotypeToFitness;
 
 pub use gen_real::GenReal;
 
