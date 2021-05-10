@@ -6,8 +6,16 @@ fn fitness(x_gen: &GenReal) -> f64 {
     (x + 2f64) * (2f64 - x) * x * x + f64::EPSILON
 }
 
-fn matching(x: &GenReal, y: &GenReal) -> bool {
-    fitness(x) > fitness(y)
+fn matching(x: &GenReal, y: &GenReal) -> f64 {
+    let fit_x = fitness(x);
+    let fit_y = fitness(y);
+    if fit_x > fit_y {
+        1f64
+    } else if fit_y > fit_x {
+        -1f64
+    } else {
+        0f64
+    }
 }
 
 fn main() {
@@ -72,7 +80,7 @@ fn main() {
         );
     }
 
-    let matching_b: Box<dyn Fn(&GenReal, &GenReal) -> bool> = Box::new(matching);
+    let matching_b: Box<dyn Fn(&GenReal, &GenReal) -> f64> = Box::new(matching);
 
     let last_population = ga_tournament_selection(&Vec::new(), &params, &matching_b);
 

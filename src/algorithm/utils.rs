@@ -44,26 +44,23 @@ where
 }
 
 /// Finds distribution based on number of wins in tournament
-pub(super) fn tournament_wins_distribution<T>(
+pub(super) fn tournament_wins<T>(
     population: &Vec<Rc<T>>,
-    matching: &Box<dyn Fn(&T, &T) -> bool>,
-) -> WeightedIndex<f64>
+    matching: &Box<dyn Fn(&T, &T) -> f64>,
+) -> Vec<f64>
 where
     T: Genetic + Hash + Eq,
 {
-    let mut wins = Vec::with_capacity(population.len());
+    let mut wins = vec![0f64; population.len()];
 
-    for elem_a in population {
-        let mut elem_a_wins = 0u64;
-        for elem_b in population {
-            if matching(elem_a, elem_b) {
-                elem_a_wins += 1;
-            }
+    for idx_a in 0..population.len() {
+        for idx_b in 0..population.len() {
+            wins[idx_a] += matching(&population[idx_a], &population[idx_b]);
+            wins[idx_b] += -matching(&population[idx_a], &population[idx_b]);
         }
-        wins.push(elem_a_wins as f64);
     }
 
-    WeightedIndex::new(wins).unwrap()
+    wins.iter().map(|x| x.max(0f64) + 1f64).collect()
 }
 
 /// Selects and reproduces a new population using a given distribution.
