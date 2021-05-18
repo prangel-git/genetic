@@ -61,7 +61,7 @@ where
         }
     }
 
-    wins.iter().map(|x| x.max(0f64) + 1f64).collect()
+    wins.iter().map(|x| x.max(0f64)).collect()
 }
 
 /// Selects and reproduces a new population using a given distribution.
