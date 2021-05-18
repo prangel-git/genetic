@@ -55,8 +55,9 @@ where
 
     for idx_a in 0..population.len() {
         for idx_b in 0..population.len() {
-            wins[idx_a] += matching(&population[idx_a], &population[idx_b]);
-            wins[idx_b] += -matching(&population[idx_a], &population[idx_b]);
+            let result_match = matching(&population[idx_a], &population[idx_b]);
+            wins[idx_a] += result_match;
+            wins[idx_b] -= result_match;
         }
     }
 
