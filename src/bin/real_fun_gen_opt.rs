@@ -1,4 +1,6 @@
-use genetic::*;
+use genetic::gen_real::GenReal;
+use genetic::Genetic;
+use genetic::algorithm::*;
 
 fn fitness(x_gen: &GenReal) -> f64 {
     let x = *x_gen.value();

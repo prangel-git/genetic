@@ -1,5 +1,4 @@
-use crate::Genetic;
-use crate::GenotypeToFitness;
+use crate::genetic::Genetic;
 
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
@@ -8,6 +7,8 @@ use std::rc::Rc;
 
 use rand::distributions::WeightedIndex;
 use rand::prelude::*;
+
+use super::GenotypeToFitness;
 
 /// If the initial population is smaller than the max_population, it completes it with random elements
 pub(super) fn initial_population_make<T>(

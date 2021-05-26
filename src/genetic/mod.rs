@@ -1,37 +1,28 @@
-use bitvec::prelude::*;
-use rand::Rng;
-
-pub type Chromosome = BitVec<Lsb0, u64>;
+use super::chromosome::Chromosome;
 
 /// Produces genetic material for genetic algorithm
 pub trait Genetic {
+    type Chromosome : Chromosome + Sized;
+
     /// Returns a random element
     fn new_random() -> Self;
 
     /// Returns the gene of an object
-    fn choromosome(&self) -> Chromosome;
+    fn choromosome(&self) -> Self::Chromosome;
 
     /// Returns object from chromosome
-    fn from_chromosome(chromosome: Chromosome) -> Self;
+    fn from_chromosome(chromosome: Self::Chromosome) -> Self;
 
     /// Mutates the bits of a chromosome. Each bit is mutated with probability equals to mutation_rate.
     fn mutation(&self, mutation_rate: f64) -> Self
     where
         Self: Sized,
     {
-        let mut rng = rand::thread_rng();
+        let chromosome = self.choromosome();
 
-        let mut chromosome = self.choromosome();
+        let mutated = chromosome.mutation(mutation_rate);
 
-        for gene in &mut chromosome {
-            let rnd = rng.gen::<f64>();
-            if rnd < mutation_rate {
-                let new_value = !(*gene);
-                gene.set(new_value);
-            }
-        }
-
-        Genetic::from_chromosome(chromosome)
+        Genetic::from_chromosome(mutated)
     }
 
     /// Crosses the bits of two chromosomes. The crossover happens with probability co_rate.
@@ -39,18 +30,11 @@ pub trait Genetic {
     where
         Self: Sized,
     {
-        let mut rng = rand::thread_rng();
-
-        let mut chromosome = self.choromosome();
+        let chromosome = self.choromosome();
         let chromosome_other = other.choromosome();
 
-        for (gene, gene_other) in chromosome.iter_mut().zip(chromosome_other) {
-            let rnd = rng.gen::<f64>();
-            if rnd < co_rate {
-                gene.set(gene_other);
-            }
-        }
+        let child = chromosome.cross_over(&chromosome_other, co_rate);
 
-        Genetic::from_chromosome(chromosome)
+        Genetic::from_chromosome(child)
     }
 }

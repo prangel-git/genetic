@@ -1,18 +1,13 @@
 extern crate bitvec;
+extern crate rand;
 
-mod algorithm;
-mod gen_real;
+pub mod algorithm;
+pub mod gen_real;
 mod genetic;
+mod chromosome;
 
-pub use genetic::Chromosome;
 pub use genetic::Genetic;
-
-pub use algorithm::ga_fitness_selection;
-pub use algorithm::ga_tournament_selection;
-pub use algorithm::AlgorithmParams;
-pub use algorithm::GenotypeToFitness;
-
-pub use gen_real::GenReal;
+pub use chromosome::Chromosome;
 
 #[cfg(test)]
 mod tests {

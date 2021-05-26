@@ -1,5 +1,5 @@
 use super::GenReal;
-use crate::Genetic;
+use crate::genetic::Genetic;
 
 use std::hash::Hash;
 

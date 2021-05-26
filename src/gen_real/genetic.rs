@@ -1,10 +1,13 @@
-use crate::Chromosome;
-use crate::GenReal;
-use crate::Genetic;
 
+use super::GenReal;
+use crate::genetic::Genetic;
+
+use bitvec::prelude::*;
 use rand::Rng;
 
 impl Genetic for GenReal {
+    type Chromosome = BitVec<Lsb0, u64>;
+
     fn new_random() -> Self {
         let mut rng = rand::thread_rng();
         let value = 4f64 * rng.gen::<f64>() - 2f64;
@@ -12,12 +15,12 @@ impl Genetic for GenReal {
         GenReal::new(value)
     }
 
-    fn choromosome(&self) -> Chromosome {
+    fn choromosome(&self) -> Self::Chromosome {
         let value_bits = self.value.to_bits();
-        Chromosome::from_element(value_bits)
+        Self::Chromosome::from_element(value_bits)
     }
 
-    fn from_chromosome(chromosome: Chromosome) -> Self {
+    fn from_chromosome(chromosome: Self::Chromosome) -> Self {
         if chromosome.is_empty() {
             Genetic::new_random()
         } else {

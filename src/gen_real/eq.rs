@@ -1,5 +1,5 @@
 use super::GenReal;
-use crate::Genetic;
+use crate::genetic::Genetic;
 
 impl PartialEq for GenReal {
     fn eq(&self, other: &Self) -> bool {

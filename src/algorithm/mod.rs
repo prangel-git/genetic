@@ -3,7 +3,7 @@ mod utils;
 use rand::distributions::WeightedIndex;
 use utils::*;
 
-use crate::Genetic;
+use crate::genetic::Genetic;
 
 use core::f64;
 
